@@ -4,9 +4,38 @@ from altair.vegalite.v4.schema.channels import Column
 import streamlit as st
 import requests
 from streamlit.elements import text
+import json
 
 from streamlit.proto.Video_pb2 import Video
 from streamlit_player import st_player
+
+
+
+st.header('Movies in Trending💥💥')
+response_API = requests.get('https://api.themoviedb.org/3/trending/movie/week?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US')
+data = response_API.text
+parse_json = json.loads(data)
+poster_path1 = parse_json['results'][0]['poster_path']
+poster_path2=parse_json['results'][1]['poster_path']
+poster_path3=parse_json['results'][2]['poster_path']
+poster_path4=parse_json['results'][3]['poster_path']
+poster_path5=parse_json['results'][4]['poster_path']
+Trending_movie_path1="https://image.tmdb.org/t/p/w500/" + poster_path1
+Trending_movie_path2="https://image.tmdb.org/t/p/w500/" + poster_path2
+Trending_movie_path3="https://image.tmdb.org/t/p/w500/" + poster_path3
+Trending_movie_path4="https://image.tmdb.org/t/p/w500/" + poster_path4
+Trending_movie_path5="https://image.tmdb.org/t/p/w500/" + poster_path5
+col1, col2,col3,col4,col5 = st.columns(5)
+with col1:
+    st.image(Trending_movie_path1)
+with col2:
+    st.image(Trending_movie_path2)
+with col3:
+    st.image(Trending_movie_path3)
+with col4:
+    st.image(Trending_movie_path4)
+with col5:
+    st.image(Trending_movie_path5)
 
 st.header('Movie Recommendation System')
 
@@ -32,21 +61,21 @@ def select_movie(selected_movie):
 id_give , index_movie = select_movie(selected_movie)
 
 
-def video_player(index_movie):
-    for_video = "https://api.themoviedb.org/3/movie/{}/videos?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(index_movie)
-    rv = requests.get(for_video)
-    rv = rv.json()
+# def video_player(index_movie):
+#     for_video = "https://api.themoviedb.org/3/movie/{}/videos?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(index_movie)
+#     rv = requests.get(for_video)
+#     rv = rv.json()
 
-    for_key = rv["results"][0]
+#     for_key = rv["results"][0]
 
-    youtube_key =for_key['key']
+#     youtube_key =for_key['key']
 
-    link_youtube = ("https://youtu.be/{}").format(youtube_key)
+#     link_youtube = ("https://youtu.be/{}").format(youtube_key)
 
-    return link_youtube
+#     return link_youtube
 
 
-st_player(video_player(index_movie))
+# st_player(video_player(index_movie))
 
 
 url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(index_movie)
@@ -96,8 +125,15 @@ def fetch_poster(id_give):
 
     return full_path
 
+# def trending():
+#     url = "https://api.themoviedb.org/3/trending/all/day?api_key=8265bd1679663a7ea12ac168da84d2e8"
+#     re = requests.get(url)
+#     re = re.json()
+#     get_title = re['id']
 
-col1, col2 = st.columns([1, 2])
+#     return get_title
+
+col1, col2= st.columns([1, 2])
 with col1:
 
     st.image(full_path)
@@ -109,6 +145,23 @@ with col2:
     st.write(re["overview"])
     st.text(f"Rating: {re['vote_average']}")
     st.progress(float(re['vote_average']) / 10)
+
+    
+def video_player(index_movie):
+    for_video = "https://api.themoviedb.org/3/movie/{}/videos?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(index_movie)
+    rv = requests.get(for_video)
+    rv = rv.json()
+
+    for_key = rv["results"][0]
+
+    youtube_key =for_key['key']
+
+    link_youtube = ("https://youtu.be/{}").format(youtube_key)
+
+    return link_youtube
+
+
+st_player(video_player(index_movie))
 
 
 
@@ -136,9 +189,7 @@ if st.button('Show Recommendation'):
         movie1 = recommended_movie_names[0]
         st.text(movie1)
         st.image(recommended_movie_posters[0])
-        if st.button("like this "):
-            st.write(movie1)
-
+        
             
     with col2:
         st.text(recommended_movie_names[1])
@@ -165,4 +216,13 @@ if st.button('Show Recommendation'):
 #         recommended_movie_names1 = recommend(movie_1)
        
 
+# url = "https://api.themoviedb.org/3/trending/all/day?api_key=8265bd1679663a7ea12ac168da84d2e8"
+# re = requests.get(url)
 
+# re = re.json()
+# #st.write(re)
+# get_title = re['results']
+
+# title_get = get_title[0]
+
+# st.write(get_title)
